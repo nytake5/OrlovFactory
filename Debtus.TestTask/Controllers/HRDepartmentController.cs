@@ -103,6 +103,7 @@ namespace Debtus.TestTask.Controllers
                 return BadRequest("ObjectNotFound");
             }
         }
+
         /// <summary>
         /// Get employee by pass number
         /// if passnumber no such exist
@@ -126,6 +127,7 @@ namespace Debtus.TestTask.Controllers
                 return BadRequest("Something went wrong!");
             }
         }
+
         [HttpGet]
         [Route("ListOfPosts")]
         public IActionResult GetListOfPosts()

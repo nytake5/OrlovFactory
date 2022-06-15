@@ -3,7 +3,7 @@ using BLL_Interface;
 using Debtus.TestTask.Entities;
 using Debtus.TestTask.Entities.Exceptions;
 using Debtus.TestTask.Model;
-using Microsoft.AspNetCore.Http;
+using Debtus.TestTask.Views;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Debtus.TestTask.Controllers
@@ -30,7 +30,7 @@ namespace Debtus.TestTask.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("StartShift")]
-        public IActionResult StartShift(WorkingShiftView workingShift)
+        public IActionResult StartShift(StartWorkingShiftView workingShift)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Debtus.TestTask.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("EndShift")]
-        public IActionResult EndShift(WorkingShiftView workingShift)
+        public IActionResult EndShift(EndWorkingShiftView workingShift)
         {
             try
             {
