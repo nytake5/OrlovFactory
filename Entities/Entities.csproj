@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BLL.Interfaces\BLL.Interfaces.csproj" />
-    <ProjectReference Include="..\DAL\DAL.csproj" />
+    <PackageReference Include="Swashbuckle" Version="5.6.0" />
   </ItemGroup>
 
 </Project>

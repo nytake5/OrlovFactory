@@ -1,32 +1,32 @@
-﻿using BLL_Interface;
-using Debtus.IDAL;
-using Debtus.TestTask.Entities;
-using Debtus.TestTask.Entities.Exceptions;
+﻿using BLL.Interfaces;
+using DAL.Interfaces;
+using Entities;
+using Entities.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace BLL
 {
-    public class CheckpointLogic : ICheckpointLogic
+    public class CheckpointLogic : BaseLogic, ICheckpointLogic
     {
-        private readonly IWorkingShift_DAO _workingShift_DAO;
+        private readonly IWorkingShiftDao _workingShiftDao;
 
-        public CheckpointLogic(IWorkingShift_DAO workingShift_DAO)
+        public CheckpointLogic(
+            IWorkingShiftDao workingShiftDao,
+            ILogger<CheckpointLogic> logger)
+            : base(logger)
         {
-            _workingShift_DAO = workingShift_DAO;
+            _workingShiftDao = workingShiftDao;
         }
 
         public void StartShift(WorkingShift workingShift)
         {
             try
             {
-                _workingShift_DAO.StartShift(workingShift);
+                _workingShiftDao.StartShift(workingShift);
             }
             catch (KeyNotFoundException ex)
             {
-                throw ex;
-            }
-            catch (ShiftException ex)
-            {
-                throw ex;
+                throw new KeyNotFoundException("There is no such employee!");
             }
         }
 
@@ -34,11 +34,11 @@ namespace BLL
         {
             try
             {
-                _workingShift_DAO.EndShift(workingShift);
+                _workingShiftDao.EndShift(workingShift);
             }
             catch (KeyNotFoundException ex)
             {
-                throw ex;
+                throw;
             }
             catch (ShiftException ex)
             {
