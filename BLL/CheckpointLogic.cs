@@ -36,10 +36,6 @@ namespace BLL
             {
                 _workingShiftDao.EndShift(workingShift);
             }
-            catch (KeyNotFoundException ex)
-            {
-                throw;
-            }
             catch (ShiftException ex)
             {
                 throw ex;
