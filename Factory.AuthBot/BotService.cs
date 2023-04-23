@@ -1,4 +1,6 @@
-﻿using BLL.Interfaces;
+﻿using System.Text;
+using BLL.Interfaces;
+using RabbitMQ.Client;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using User = Entities.User;
@@ -9,15 +11,23 @@ public class BotService
 {
     private readonly TelegramBotClient _telegramBotClient;
     private readonly IUserLogic _logic;
-    
+    private readonly IModel _channel;
     private string PreviousMessage { get; set; }
     
     public BotService(
         IUserLogic logic, 
-        TelegramBotClient telegramBotClient)
+        TelegramBotClient telegramBotClient,
+        IConnection connection)
     {
         _logic = logic;
         _telegramBotClient = telegramBotClient;
+        var factory = new ConnectionFactory { HostName = "localhost" }; 
+        _channel = connection.CreateModel();
+        _channel.QueueDeclare(queue: "QueueUsers",
+            durable: false,
+            exclusive: false,
+            autoDelete: false,
+            arguments: null);
     }
 
     public void StartPulling()
@@ -57,6 +67,7 @@ public class BotService
                     var token = Guid.NewGuid();
                     await botClient.SendTextMessageAsync(chatId, token.ToString(),  cancellationToken: cancellationToken);
                     await _logic.TokenizeUser(username, token);
+                    await LogDefaultMessage(username);
                 }
                 else
                 { 
@@ -75,5 +86,17 @@ public class BotService
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
+    }
+
+    private async Task LogDefaultMessage(
+        string message)
+    {
+        message += " " + "успешно авторизован";
+        var body = Encoding.UTF8.GetBytes(message);
+        
+        _channel.BasicPublish(exchange: string.Empty,
+            routingKey: "hello",
+            basicProperties: null,  
+            body: body);
     }
 }

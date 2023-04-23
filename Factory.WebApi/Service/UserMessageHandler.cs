@@ -16,27 +16,29 @@ public class UserMessageHandler : BackgroundService
     {
         _connection = connection;
         _channel = channel;
-        _channel.QueueDeclare(queue: "UsersQueue", durable: false, exclusive: false, autoDelete: false,
+        _channel.QueueDeclare(queue: "QueueUsers", durable: false, exclusive: false, autoDelete: false,
             arguments: null);
     }
     
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        stoppingToken.ThrowIfCancellationRequested();
-
-        var consumer = new EventingBasicConsumer(_channel);
-        consumer.Received += (ch, ea) =>
+        while (true)
         {
-            var content = Encoding.UTF8.GetString(ea.Body.ToArray());
-			    
-            Debug.WriteLine($"Получено сообщение: {content}");
+            stoppingToken.ThrowIfCancellationRequested();
 
-            _channel.BasicAck(ea.DeliveryTag, false);
-        };
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += (ch, ea) =>
+            {
+                var content = Encoding.UTF8.GetString(ea.Body.ToArray());
+			        
+                Debug.WriteLine($"Получено сообщение: {content}");
 
-        _channel.BasicConsume("UsersQueue", false, consumer);
+                _channel.BasicAck(ea.DeliveryTag, false);
+            };
 
-        return Task.CompletedTask;
+            var message = _channel.BasicConsume("QueueUsers", false, consumer);
+            Debug.WriteLine(message);
+        }
     }
     
     public override void Dispose()

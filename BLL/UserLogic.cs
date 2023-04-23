@@ -10,17 +10,16 @@ namespace BLL;
 public class UserLogic : BaseLogic, IUserLogic
 {
     private readonly IUserDao _dao;
-    //private readonly IDistributedCache _distributedCache;
+    private readonly IDistributedCache _distributedCache;
     
     public UserLogic(
         ILogger<UserLogic> logger,
-        IUserDao dao
-        //DistributedCache distributedCache
-        )   
+        IUserDao dao,
+        IDistributedCache distributedCache)   
         : base(logger)
     {
         _dao = dao;
-        //_distributedCache = distributedCache;
+        _distributedCache = distributedCache;
     }
     
     public async Task AddNewUser(User user)
@@ -42,22 +41,22 @@ public class UserLogic : BaseLogic, IUserLogic
     {
         var user =  await _dao.GetUserByLogin(login);
 
-        /*var userString = JsonSerializer.Serialize(user);
+        var userString = JsonSerializer.Serialize(user);
 
-        await _distributedCache.SetStringAsync(chatId.ToString(), userString);*/
+        await _distributedCache.SetStringAsync(chatId.ToString(), userString);
         
         return user;
     }
 
     public async Task<User> GetUserByChatId(long chatId)
     {
-        /*var userString = await _distributedCache.GetStringAsync(chatId.ToString());
+        var userString = await _distributedCache.GetStringAsync(chatId.ToString());
         if (!string.IsNullOrWhiteSpace(userString))
         {
             var user = JsonSerializer.Deserialize<User>(userString);
 
             return user;
-        }*/
+        }
         return null;
     }
 }

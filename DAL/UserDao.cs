@@ -14,12 +14,12 @@ public class UserDao : BaseDao, IUserDao
     
     public async Task AddNewUser(User user)
     {
-        await DbContext.Users.AddAsync(user);
+        await DbContext.FactoryUsers.AddAsync(user);
         await DbContext.SaveChangesAsync();
     }
     public async Task<bool> LoginUser(User user)
     {
-        var existUser = DbContext.Users
+        var existUser = DbContext.FactoryUsers
             .FirstOrDefault(u => u.Login == user.Login
                                         && u.Password == user.Password);
         
@@ -28,7 +28,7 @@ public class UserDao : BaseDao, IUserDao
     
     public async Task<bool> TokenizeUser(string username, Guid token)
     {
-        var existUser = await DbContext.Users
+        var existUser = await DbContext.FactoryUsers
             .FirstOrDefaultAsync(u => u.Login == username);
         
         if (existUser == null)
@@ -36,14 +36,14 @@ public class UserDao : BaseDao, IUserDao
             return false;
         }
         existUser.Token = token;
-        DbContext.Users.Update(existUser);
+        DbContext.FactoryUsers.Update(existUser);
         var cnt = await DbContext.SaveChangesAsync();
         return cnt != 0;
     }
 
     public async Task<User> GetUserByLogin(string login)
     {
-        var user = await DbContext.Users.FirstOrDefaultAsync(u => u.Login == login);
+        var user = await DbContext.FactoryUsers.FirstOrDefaultAsync(u => u.Login == login);
 
         return user;
     }

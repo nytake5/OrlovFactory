@@ -37,7 +37,7 @@ builder.Services.AddScoped<ICheckpointLogic, CheckpointLogic>();
 builder.Services.AddScoped<IHrDeparmentLogic, HrDepartmentLogic>();
 builder.Services.AddScoped<IUserLogic, UserLogic>();
 
-//builder.Services.AddHostedService<UserMessageHandler>();
+builder.Services.AddHostedService<UserMessageHandler>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     {
@@ -54,15 +54,17 @@ builder.Services.AddDbContextFactory<FactoryContext>(
             .UseNpgsql(config?.NpgsqlConnectionString);
     });
 
-/*builder.Services.AddSingleton(s =>
+builder.Services.AddSingleton(s =>
 {
     var factory = new ConnectionFactory()
     {
-        HostName = config.RabbitMqServerHostName
+        HostName = config?.RabbitMqServerHostName,
+        UserName = "orlov",
+        Password = "2323"
     };
     var connection = factory.CreateConnection();
     return connection;
-});*/
+});
 
 builder.Services.AddSingleton(s =>
 {

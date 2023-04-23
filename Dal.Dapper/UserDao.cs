@@ -11,8 +11,8 @@ public class UserDao : BaseDapperDao, IUserDao
         await using var connection = GetConnection();
         const string query = 
             $""""
-            INSERT INTO public."Users"("Login", "Password", "EmployeeId") 
-                VALUES (@login, @password, @id);
+                INSERT INTO "FactoryUsers"("Login", "Password", "EmployeeId") 
+                    VALUES (@login, @password, @id);
             """";
         
         var parameters = new
@@ -29,7 +29,7 @@ public class UserDao : BaseDapperDao, IUserDao
         await using var connection = GetConnection();
         const string query = 
             $""""
-                SELECT 1 FROM public."Users"
+                SELECT * FROM "FactoryUsers"
                 WHERE "Login" = @login AND "Password" = @password
             """";
         
@@ -47,7 +47,7 @@ public class UserDao : BaseDapperDao, IUserDao
         await using var connection = GetConnection();
         const string query = 
             $""""""
-                UPDATE public."Users" 
+                UPDATE "FactoryUsers"
                     SET "Token" = @token WHERE "Login" = @login 
                     RETURNING *;
             """""";
@@ -67,7 +67,7 @@ public class UserDao : BaseDapperDao, IUserDao
         await using var connection = GetConnection();
         const string query = 
             $""""
-                SELECT * FROM public."Users"
+                SELECT * FROM "FactoryUsers"
                 WHERE "Login" = @login
             """";
         
