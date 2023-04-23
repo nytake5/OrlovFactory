@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL;
 
-public class UserDao : BaseDao, IUserDao
+public class UserDao : BaseDao, IUserDao, IAsyncDisposable
 {
     public UserDao(
         FactoryContext dbContext) 

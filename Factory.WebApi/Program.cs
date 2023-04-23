@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
-
+    
 var config = builder.Configuration
     .GetSection("EnvironmentVariables")
     .Get<EnvironmentVariables>();

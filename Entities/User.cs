@@ -22,5 +22,5 @@ public class User
     
     [NotMapped]
     [JsonIgnore]
-    public Employee Employee { get; set; }
+    public Employee? EmployeeFk { get; set; }
 }
