@@ -1,5 +1,6 @@
 ﻿using DAL.Interfaces;
 using Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL;
 
@@ -17,13 +18,25 @@ public class UserDao : BaseDao, IUserDao
         await DbContext.SaveChangesAsync();
     }
 
-    public Task<bool> LoginUser(User user)
+    public async Task<bool> LoginUser(User user)
     {
-        throw new NotImplementedException();
+        var existUser = await DbContext.Users
+            .FirstOrDefaultAsync(u => u.Login == user.Login
+                                        && u.Password == user.Password);
+        return existUser != null;
     }
 
-    public Task<bool> TokenizeUser(User user)
+    public async Task<bool> TokenizeUser(User user)
     {
-        throw new NotImplementedException();
+        var existUser = await DbContext.Users
+            .FirstOrDefaultAsync(u => u.Login == user.Login);
+        if (existUser == null)
+        {
+            return false;
+        }
+
+        DbContext.Users.Update(user);
+        var cnt = await DbContext.SaveChangesAsync();
+        return cnt != 0;
     }
 }

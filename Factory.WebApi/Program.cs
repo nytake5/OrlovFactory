@@ -4,9 +4,11 @@ using BLL;
 using BLL.Interfaces;
 using DAL;
 using DAL.Interfaces;
-using Entities.EnvironmentVariables;
 using Factory.WebApi;
+using Factory.WebApi.EnvironmentVariables;
+using Factory.WebApi.Service;
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,9 +32,12 @@ builder.Services.AddLogging();
 
 builder.Services.AddScoped<IEmployeeDao, EmployeeDao>();
 builder.Services.AddScoped<IWorkingShiftDao, WorkingShiftDao>();
+builder.Services.AddScoped<IUserDao, UserDao>();
 builder.Services.AddScoped<ICheckpointLogic, CheckpointLogic>();
 builder.Services.AddScoped<IHrDeparmentLogic, HrDepartmentLogic>();
+builder.Services.AddScoped<IUserLogic, UserLogic>();
 
+builder.Services.AddHostedService<UserMessageHandler>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     {
@@ -48,6 +53,22 @@ builder.Services.AddDbContextFactory<FactoryContext>(
         optionsAction
             .UseNpgsql(config?.NpgsqlConnectionString);
     });
+
+builder.Services.AddSingleton(s =>
+{
+    var factory = new ConnectionFactory()
+    {
+        HostName = config.RabbitMqServerHostName
+    };
+    var connection = factory.CreateConnection();
+    return connection;
+});
+
+builder.Services.AddSingleton(s =>
+{
+    var connection = s.GetService<IConnection>();
+    return connection?.CreateModel();
+});
 
 var app = builder.Build();
 

@@ -7,21 +7,31 @@ namespace Factory.AuthBot;
 public class BotService
 {
     private readonly TelegramBotClient _telegramBotClient;
+    private readonly ILogger _logger;
     
-    public BotService(TelegramBotClient telegramBotClient)
+    public BotService(
+        TelegramBotClient telegramBotClient,
+        Logger<BotService> logger)
     {
         _telegramBotClient = telegramBotClient;
         
+        _telegramBotClient.StartReceiving(Update, Error);
+        _logger = logger;
+    }
+
+    public void StartPulling()
+    {
         _telegramBotClient.StartReceiving(Update, Error);
     }
     
     private void Update(
         ITelegramBotClient botClient,
-        Update updateLogic,
+        Update update,
         CancellationToken cancellationToken)
     {
-        var messageText  = updateLogic.Message?.Text;
-        var chatId = updateLogic.Message?.Chat.Id;
+        var message = update.Message?.Text;
+        var userId = update.Message?.Chat.Username;
+        var chatId = update.Message?.Chat.Id;
 
         var token = Guid.NewGuid();
 
@@ -30,9 +40,12 @@ public class BotService
 
     private void Error(
         ITelegramBotClient botClient,
-        Exception updateLogic,
+        Exception ex,
         CancellationToken cancellationToken)
     {
-        
+        _logger.LogError(
+            "{ExceptionType}: There's some error. {ExceptionMessage}",
+            ex.GetType(),
+            ex.Message);
     }
 }

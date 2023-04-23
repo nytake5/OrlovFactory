@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Entities;
 
@@ -20,5 +21,6 @@ public class User
     public int EmployeeId { get; set; }
     
     [NotMapped]
+    [JsonIgnore]
     public Employee Employee { get; set; }
 }

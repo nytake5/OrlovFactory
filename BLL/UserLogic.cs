@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using DAL.Interfaces;
 using Entities;
 using Microsoft.Extensions.Logging;
 
@@ -6,25 +7,28 @@ namespace BLL;
 
 public class UserLogic : BaseLogic, IUserLogic
 {
+    private readonly IUserDao _dao;
     
-    public UserLogic(ILogger<UserLogic> logger) 
+    public UserLogic(
+        ILogger<UserLogic> logger,
+        IUserDao dao)   
         : base(logger)
     {
-        
+        _dao = dao;
     }
     
-    public Task AddNewUser(User user)
+    public async Task AddNewUser(User user)
     {
-        throw new NotImplementedException();
+        await _dao.AddNewUser(user);
     }
 
-    public Task<bool> LoginUser(User user)
+    public async Task<bool> LoginUser(User user)
     {
-        throw new NotImplementedException();
+        return await _dao.LoginUser(user);
     }
 
-    public Task<bool> TokenizeUser(User user)
-    {
-        throw new NotImplementedException();
+    public async Task<bool> TokenizeUser(User user)
+    {        
+        return await _dao.TokenizeUser(user);
     }
 }
