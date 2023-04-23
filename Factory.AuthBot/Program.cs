@@ -1,10 +1,9 @@
 using BLL;
 using BLL.Interfaces;
-using DAL;
+using Dal.Dapper;
 using DAL.Interfaces;
 using Factory.AuthBot;
 using Factory.AuthBot.EnvironmentVariables;
-using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using Telegram.Bot;
 
@@ -19,25 +18,18 @@ var conf = config.GetSection("EnvironmentVariables").Get<EnvironmentVariables>()
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
-        services.AddHostedService<Worker>();
         services.AddLogging();
 
-        services.AddScoped<IUserDao, UserDao>();
-        services.AddScoped<IUserLogic, UserLogic>();
+        services.AddSingleton<IUserDao, UserDao>();
+        services.AddSingleton<IUserLogic, UserLogic>();
+        services.AddSingleton<BotService>();
         services.AddSingleton(s =>
         {
-            var bot = new TelegramBotClient(conf.TelegramBotToken);
-            return bot;
+            var bot = new TelegramBotClient(conf?.TelegramBotToken);
+            return bot; 
         });
-        
-        services.AddDbContextFactory<FactoryContext>(
-            optionsAction =>
-            {
-                optionsAction
-                    .UseNpgsql(conf?.NpgsqlConnectionString);
-            });
 
-        services.AddSingleton(s =>
+        /*services.AddSingleton(s =>
         {
             var factory = new ConnectionFactory()
             {
@@ -45,7 +37,15 @@ IHost host = Host.CreateDefaultBuilder(args)
             };
             var connection = factory.CreateConnection();
             return connection;
-        });
+        });*/
+        
+        /*services.AddStackExchangeRedisCache(options => {
+            options.Configuration = "localhost:6379";
+            options.InstanceName = "local";
+        });*/
+        
+        
+        services.AddHostedService<Worker>();
     })
     .Build();
 

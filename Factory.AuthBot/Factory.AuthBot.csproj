@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.5" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0-preview.2" />
         <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
@@ -17,6 +18,7 @@
     <ItemGroup>
       <ProjectReference Include="..\BLL.Interfaces\BLL.Interfaces.csproj" />
       <ProjectReference Include="..\BLL\BLL.csproj" />
+      <ProjectReference Include="..\Dal.Dapper\Dal.Dapper.csproj" />
       <ProjectReference Include="..\DAL\DAL.csproj" />
     </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@ public class User
     [Required]
     public string Password { get; set; }
 
-    public string? Token { get; set; }
+    public Guid? Token { get; set; }
 
     [ForeignKey(nameof(Employee))] 
     public int EmployeeId { get; set; }

@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PL", "PL", "{96ABD378-280F-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Factory.AuthBot", "Factory.AuthBot\Factory.AuthBot.csproj", "{F995BA6E-0A24-4F3C-B4D4-1F83C2342B02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dal.Dapper", "Dal.Dapper\Dal.Dapper.csproj", "{37C2ACB6-21F5-4973-92BD-1251E4D2BBE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{F995BA6E-0A24-4F3C-B4D4-1F83C2342B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F995BA6E-0A24-4F3C-B4D4-1F83C2342B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F995BA6E-0A24-4F3C-B4D4-1F83C2342B02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37C2ACB6-21F5-4973-92BD-1251E4D2BBE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37C2ACB6-21F5-4973-92BD-1251E4D2BBE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37C2ACB6-21F5-4973-92BD-1251E4D2BBE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37C2ACB6-21F5-4973-92BD-1251E4D2BBE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +77,7 @@ Global
 		{9D5AB410-7E85-4E24-A2F4-FA9C494D77C8} = {565476A0-365A-4DD2-9E05-38DCD8465AF3}
 		{8DCEEE3D-BCB2-4B88-8173-AE944113F5A8} = {96ABD378-280F-419E-9CE0-81C799D4C97E}
 		{F995BA6E-0A24-4F3C-B4D4-1F83C2342B02} = {96ABD378-280F-419E-9CE0-81C799D4C97E}
+		{37C2ACB6-21F5-4973-92BD-1251E4D2BBE8} = {A89C8BED-6061-4E14-8594-8A1C30B352CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82D2B47D-23D8-46E0-B408-649CA996A086}

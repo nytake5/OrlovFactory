@@ -37,7 +37,7 @@ builder.Services.AddScoped<ICheckpointLogic, CheckpointLogic>();
 builder.Services.AddScoped<IHrDeparmentLogic, HrDepartmentLogic>();
 builder.Services.AddScoped<IUserLogic, UserLogic>();
 
-builder.Services.AddHostedService<UserMessageHandler>();
+//builder.Services.AddHostedService<UserMessageHandler>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     {
@@ -54,7 +54,7 @@ builder.Services.AddDbContextFactory<FactoryContext>(
             .UseNpgsql(config?.NpgsqlConnectionString);
     });
 
-builder.Services.AddSingleton(s =>
+/*builder.Services.AddSingleton(s =>
 {
     var factory = new ConnectionFactory()
     {
@@ -62,12 +62,17 @@ builder.Services.AddSingleton(s =>
     };
     var connection = factory.CreateConnection();
     return connection;
-});
+});*/
 
 builder.Services.AddSingleton(s =>
 {
     var connection = s.GetService<IConnection>();
     return connection?.CreateModel();
+});
+
+builder.Services.AddStackExchangeRedisCache(options => {
+    options.Configuration = "localhost:6379";
+    options.InstanceName = "local";
 });
 
 var app = builder.Build();

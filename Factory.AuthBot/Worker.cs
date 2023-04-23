@@ -1,4 +1,7 @@
+using BLL;
 using BLL.Interfaces;
+using DAL.Interfaces;
+using Microsoft.Extensions.Caching.Distributed;
 using Telegram.Bot;
 
 namespace Factory.AuthBot;
@@ -6,22 +9,19 @@ namespace Factory.AuthBot;
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly BotService _service;
+    private readonly BotService _botService;
     public Worker(
         ILogger<Worker> logger,
-        IServiceProvider serviceProvider)   
+        BotService botService)
     {
         _logger = logger;
-        using var scope = serviceProvider.CreateScope();
-        var logic = scope.ServiceProvider.GetRequiredService<IUserLogic>();
-        var bot = scope.ServiceProvider.GetRequiredService<TelegramBotClient>();
-        _service = new BotService(logic, bot);
+        _botService = botService;
     }
-
+ 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-
-        _service.StartPulling();
+            _botService.StartPulling();
+            await Task.Delay(1000, stoppingToken);
     }
 }

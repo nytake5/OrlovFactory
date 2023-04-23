@@ -7,13 +7,13 @@ public class BaseDao : IAsyncDisposable, IDisposable
     {
         DbContext = dbContext;
     }
-    public async ValueTask DisposeAsync()
-    {
-        await DbContext.DisposeAsync();
-    }
-
     public void Dispose()
     {
         DbContext.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DbContext.DisposeAsync();
     }
 }

@@ -28,7 +28,7 @@ public class UserMessageHandler : BackgroundService
         consumer.Received += (ch, ea) =>
         {
             var content = Encoding.UTF8.GetString(ea.Body.ToArray());
-			
+			    
             Debug.WriteLine($"Получено сообщение: {content}");
 
             _channel.BasicAck(ea.DeliveryTag, false);
