@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using BLL.Interfaces;
 using Factory.AuthBot.Jobs;
-using Hangfire;
 using RabbitMQ.Client;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -47,7 +46,7 @@ public class BotService
         switch (message)
         {   
             case "/start":
-                var userByChatId = await _logic.GetUserByChatId(chatId.Value);
+                var userByChatId = await _logic.GetUserByChatId(chatId!.Value);
                 if (userByChatId == null)
                 {
                     await botClient.SendTextMessageAsync(
@@ -57,23 +56,25 @@ public class BotService
                 {
                     var token = Guid.NewGuid();
                     await botClient.SendTextMessageAsync(chatId, token.ToString(), cancellationToken: cancellationToken);
-                    await _logic.TokenizeUser(username, token, chatId.Value);
+                    await _logic.TokenizeUser(username!, token, chatId.Value);
                     JobFather.RunNotifyJob(chatId.Value);
+                    JobFather.RunCleanJob(chatId.Value);
                 }
                 break;
             default:
-                if (await _logic.LoginUser(new User() { Login = username, Password = message}))
+                if (await _logic.LoginUser(new User() { Login = username!, Password = message!}))
                 {
                     var token = Guid.NewGuid();
-                    await botClient.SendTextMessageAsync(chatId, token.ToString(),  cancellationToken: cancellationToken);
-                    await _logic.TokenizeUser(username, token, chatId.Value);
-                    await LogDefaultMessage(username);
+                    await botClient.SendTextMessageAsync(chatId!, token.ToString(),  cancellationToken: cancellationToken);
+                    await _logic.TokenizeUser(username!, token, chatId!.Value);
+                    await LogDefaultMessage(username!);
                     JobFather.RunNotifyJob(chatId.Value);
+                    JobFather.RunCleanJob(chatId.Value);
                 }
                 else
                 { 
                     await botClient.SendTextMessageAsync(
-                        chatId, "Password wrong!", cancellationToken: cancellationToken);
+                        chatId!, "Password wrong!", cancellationToken: cancellationToken);
                 }
                 break;
         }
