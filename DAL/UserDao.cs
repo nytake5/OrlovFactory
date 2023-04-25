@@ -26,7 +26,7 @@ public class UserDao : BaseDao, IUserDao
         return await Task.FromResult(existUser != null);
     }
     
-    public async Task<bool> TokenizeUser(string username, Guid token)
+    public async Task<bool> TokenizeUser(string username, Guid token, long chatId)
     {
         var existUser = await DbContext.FactoryUsers
             .FirstOrDefaultAsync(u => u.Login == username);
@@ -36,6 +36,7 @@ public class UserDao : BaseDao, IUserDao
             return false;
         }
         existUser.Token = token;
+        existUser.ChatId = chatId;
         DbContext.FactoryUsers.Update(existUser);
         var cnt = await DbContext.SaveChangesAsync();
         return cnt != 0;
@@ -46,5 +47,27 @@ public class UserDao : BaseDao, IUserDao
         var user = await DbContext.FactoryUsers.FirstOrDefaultAsync(u => u.Login == login);
 
         return user;
+    }
+
+    public async IAsyncEnumerable<string> GetAllUsernames()
+    {
+        var result = DbContext.FactoryUsers.Select(user => user.Login);
+
+        foreach (var login in result)
+        {
+            yield return login;
+        }
+        await Task.CompletedTask;
+    }
+
+    public async IAsyncEnumerable<User> GetAllUsers()
+    {
+        var result = DbContext.FactoryUsers;
+
+        foreach (var user in result)
+        {
+            yield return user;
+        }
+        await Task.CompletedTask;
     }
 }

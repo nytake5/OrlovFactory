@@ -18,4 +18,16 @@ public class BaseDapperDao
         var connection = new NpgsqlConnection(_connectionString);
         return connection;
     }
+
+    protected async IAsyncEnumerable<T> GetEnumerable<T>(string query, object parameters)
+    {
+
+        var connection = GetConnection();
+        using var reader = await connection.ExecuteReaderAsync(query, parameters);
+        var rowParser = reader.GetRowParser<T>();
+
+        while (await reader.ReadAsync()) {
+            yield return rowParser(reader);
+        }
+    }
 }

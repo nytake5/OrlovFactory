@@ -42,20 +42,23 @@ public class UserDao : BaseDapperDao, IUserDao
         return result == 1;
     }
     
-    public async Task<bool> TokenizeUser(string username, Guid token)
+    public async Task<bool> TokenizeUser(string username, Guid token, long chatId)
     {
         await using var connection = GetConnection();
         const string query = 
             $""""""
                 UPDATE "FactoryUsers"
-                    SET "Token" = @token WHERE "Login" = @login 
+                    SET "Token" = @token,
+                        "ChatId" = @chatId
+                     WHERE "Login" = @login 
                     RETURNING *;
             """""";
         
         var parameters = new
         {
             login = username,
-            token   
+            token,
+            chatId
         };
         
         var user = await connection.QueryFirstOrDefaultAsync<User>(query, parameters);
@@ -77,6 +80,14 @@ public class UserDao : BaseDapperDao, IUserDao
         };
         
         var result = await connection.QueryFirstOrDefaultAsync<User>(query, parameters);
+        return result;
+    }
+    
+    public IAsyncEnumerable<User> GetAllUsers()
+    {
+        const string QueryString = "SELECT * FROM FactoryUsers";
+        var result = GetEnumerable<User>(QueryString, null);
+
         return result;
     }
 }

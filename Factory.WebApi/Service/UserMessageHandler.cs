@@ -22,23 +22,20 @@ public class UserMessageHandler : BackgroundService
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (true)
+        stoppingToken.ThrowIfCancellationRequested();
+
+        var consumer = new EventingBasicConsumer(_channel);
+        consumer.Received += (ch, ea) =>
         {
-            stoppingToken.ThrowIfCancellationRequested();
+            var content = Encoding.UTF8.GetString(ea.Body.ToArray());
+			    
+            Debug.WriteLine($"Получено сообщение: {content}");
 
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (ch, ea) =>
-            {
-                var content = Encoding.UTF8.GetString(ea.Body.ToArray());
-			        
-                Debug.WriteLine($"Получено сообщение: {content}");
+            _channel.BasicAck(ea.DeliveryTag, false);
+        };
 
-                _channel.BasicAck(ea.DeliveryTag, false);
-            };
-
-            var message = _channel.BasicConsume("QueueUsers", false, consumer);
-            Debug.WriteLine(message);
-        }
+        var message = _channel.BasicConsume("QueueUsers", false, consumer);
+        Debug.WriteLine(message);
     }
     
     public override void Dispose()

@@ -32,9 +32,9 @@ public class UserLogic : BaseLogic, IUserLogic
         return await _dao.LoginUser(user);
     }
 
-    public async Task<bool> TokenizeUser(string username, Guid token)
+    public async Task<bool> TokenizeUser(string username, Guid token, long chatId)
     {        
-        return await _dao.TokenizeUser(username, token);
+        return await _dao.TokenizeUser(username, token, chatId);
     }
 
     public async Task<User> GetUserByLogin(string login, long chatId)
@@ -46,6 +46,10 @@ public class UserLogic : BaseLogic, IUserLogic
         await _distributedCache.SetStringAsync(chatId.ToString(), userString);
         
         return user;
+    }
+    public IAsyncEnumerable<User> GetAllUsers()
+    {
+        return _dao.GetAllUsers();
     }
 
     public async Task<User> GetUserByChatId(long chatId)

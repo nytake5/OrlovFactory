@@ -5,6 +5,10 @@ using DAL.Interfaces;
 using Dapper;
 using Factory.AuthBot;
 using Factory.AuthBot.EnvironmentVariables;
+using Factory.AuthBot.Jobs;
+using Hangfire;
+using Hangfire.PostgreSql;
+using Microsoft.AspNetCore.Hosting;
 using RabbitMQ.Client;
 using Telegram.Bot;
 
@@ -17,6 +21,13 @@ IConfiguration config = builder.Build();
 var conf = config.GetSection("EnvironmentVariables").Get<EnvironmentVariables>();
 DefaultTypeMap.MatchNamesWithUnderscores = true;
 IHost host = Host.CreateDefaultBuilder(args)
+    .ConfigureWebHostDefaults(webBuilder =>
+    {
+        webBuilder.Configure((ctx, app) =>
+        {
+            app.UseHangfireDashboard();
+        });
+    })
     .ConfigureServices(services =>
     {
         services.AddLogging();
@@ -24,6 +35,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IUserDao, UserDao>();
         services.AddSingleton<IUserLogic, UserLogic>();
         services.AddSingleton<BotService>();
+        services.AddSingleton<NotifyService>();
         services.AddSingleton(s =>
         {
             var bot = new TelegramBotClient(conf?.TelegramBotToken);
@@ -47,9 +59,14 @@ IHost host = Host.CreateDefaultBuilder(args)
             options.InstanceName = "local";
         });
         
+        services.AddHangfire(config =>
+            config.UsePostgreSqlStorage(conf?.NpgsqlConnectionString));
         
         services.AddHostedService<Worker>();
+        
     })
     .Build();
+
+JobFather.Initialize(host.Services);
 
 host.Run();

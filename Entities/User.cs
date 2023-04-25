@@ -15,6 +15,7 @@ public class User
     [Required]
     public string Password { get; set; }
 
+    public long ChatId { get; set; }
     public Guid? Token { get; set; }
 
     [ForeignKey(nameof(Employee))] 

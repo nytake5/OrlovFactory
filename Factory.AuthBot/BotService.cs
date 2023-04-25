@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using BLL.Interfaces;
+using Factory.AuthBot.Jobs;
+using Hangfire;
 using RabbitMQ.Client;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -12,8 +14,6 @@ public class BotService
     private readonly TelegramBotClient _telegramBotClient;
     private readonly IUserLogic _logic;
     private readonly IModel _channel;
-    private string PreviousMessage { get; set; }
-    
     public BotService(
         IUserLogic logic, 
         TelegramBotClient telegramBotClient,
@@ -32,7 +32,6 @@ public class BotService
 
     public void StartPulling()
     {
-        PreviousMessage = "/start"; 
         _telegramBotClient.StartReceiving(Update, Error);
     }
     
@@ -58,7 +57,8 @@ public class BotService
                 {
                     var token = Guid.NewGuid();
                     await botClient.SendTextMessageAsync(chatId, token.ToString(), cancellationToken: cancellationToken);
-                    await _logic.TokenizeUser(username, token);
+                    await _logic.TokenizeUser(username, token, chatId.Value);
+                    JobFather.RunNotifyJob(chatId.Value);
                 }
                 break;
             default:
@@ -66,8 +66,9 @@ public class BotService
                 {
                     var token = Guid.NewGuid();
                     await botClient.SendTextMessageAsync(chatId, token.ToString(),  cancellationToken: cancellationToken);
-                    await _logic.TokenizeUser(username, token);
+                    await _logic.TokenizeUser(username, token, chatId.Value);
                     await LogDefaultMessage(username);
+                    JobFather.RunNotifyJob(chatId.Value);
                 }
                 else
                 { 
@@ -76,8 +77,6 @@ public class BotService
                 }
                 break;
         }
-
-        await Task.CompletedTask;
      }
     
     private async Task Error(
