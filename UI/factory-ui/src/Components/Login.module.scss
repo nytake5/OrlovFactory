@@ -1,0 +1,21 @@
+.LoginForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    *{
+        padding: 13px;
+        margin: 10px;
+        display: block;
+        align-items: left;
+        color: #CCCCCC;
+        background-color: #5f192e;
+    }
+
+    
+    input{
+        width: 90%;
+        font-size: 18px;
+        text-align: center;
+    }
+}
