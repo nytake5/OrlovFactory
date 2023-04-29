@@ -10,7 +10,7 @@ public class BaseDapperDao
     
     public BaseDapperDao()
     {
-        _connectionString = @"Server=127.0.0.1;Port=5433;Database=Factory;User Id=postgres;Password=2323;";
+        _connectionString = @"Server=postgres;Port=5432;Database=factory;User Id=postgres;Password=2323;";
     }
 
     public NpgsqlConnection GetConnection()
