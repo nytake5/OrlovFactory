@@ -55,7 +55,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         });
         
         services.AddStackExchangeRedisCache(options => {
-            options.Configuration = "localhost:6379";
+            options.Configuration = "redis:6379";
             options.InstanceName = "local";
         });
         

@@ -20,7 +20,7 @@ public class BotService
     {
         _logic = logic;
         _telegramBotClient = telegramBotClient;
-        var factory = new ConnectionFactory { HostName = "localhost" }; 
+        var factory = new ConnectionFactory { HostName = "rabbitmq3" }; 
         _channel = connection.CreateModel();
         _channel.QueueDeclare(queue: "QueueUsers",
             durable: false,

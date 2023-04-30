@@ -9,6 +9,7 @@ namespace DAL
             DbContextOptions<FactoryContext> options) 
             : base(options)
         {
+            Database.EnsureCreated();
         }
         
         public DbSet<Employee> Employees { get; set; }  
