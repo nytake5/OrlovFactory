@@ -14,16 +14,17 @@ export class ModalComponent {
   token: string = '';
 
   constructor(public authService: AuthService) {  
-
   }
   
   onClickSuccessButton(): void {
     const userCreds: UserCredentials = {
       Login: this.login,
-      Token: this.token
+      Token: this.token,
+      Password: "moqed"
     }
-    console.log(userCreds);
     this.authService.authorizeByLogAndToken(userCreds);
-    this.isAuth = this.authService.checkCreds();
+    const example = this.isAuth.subscribe(val => {
+      this.authService.checkCredsInCookie();
+    });
   } 
 }

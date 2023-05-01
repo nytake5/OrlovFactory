@@ -9,4 +9,5 @@ public interface IUserDao
     Task<bool> TokenizeUser(string username, Guid token, long chatId);
     Task<User> GetUserByLogin(string login);
     IAsyncEnumerable<User> GetAllUsers();
+    Task<bool> LoginByToken(User user);
 }

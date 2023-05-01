@@ -1,4 +1,5 @@
 export interface UserCredentials {
     Login: string,
-    Token: string    
+    Token: string,
+    Password: string
 }

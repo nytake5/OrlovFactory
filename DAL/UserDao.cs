@@ -7,25 +7,35 @@ namespace DAL;
 public class UserDao : BaseDao, IUserDao
 {
     public UserDao(
-        FactoryContext dbContext) 
+        FactoryContext dbContext)
         : base(dbContext)
     {
     }
-    
+
     public async Task AddNewUser(User user)
     {
         await DbContext.FactoryUsers.AddAsync(user);
         await DbContext.SaveChangesAsync();
     }
+
     public async Task<bool> LoginUser(User user)
     {
         var existUser = DbContext.FactoryUsers
             .FirstOrDefault(u => u.Login == user.Login
-                                        && u.Password == user.Password);
-        
+                                 && u.Password == user.Password);
+
         return await Task.FromResult(existUser != null);
     }
-    
+
+    public async Task<bool> LoginByToken(User user)
+    {
+        var existUser = await DbContext.FactoryUsers
+            .FirstOrDefaultAsync(u => u.Login == user.Login
+                                 && u.Token == user.Token);
+
+        return existUser != null;
+    }
+
     public async Task<bool> TokenizeUser(string username, Guid token, long chatId)
     {
         var existUser = await DbContext.FactoryUsers

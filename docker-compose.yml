@@ -57,6 +57,14 @@ services:
     build:
       context: .
       dockerfile: Factory.AuthBot/Dockerfile
+  frontend:
+    build:
+      context: .
+      dockerfile: UI/factory-ui/Dockerfile
+    ports:
+      - "80:4200"
+    depends_on:
+      - telegram_bot
 volumes:
   redis_data:
     driver: local

@@ -11,17 +11,17 @@ public class UserLogic : BaseLogic, IUserLogic
 {
     private readonly IUserDao _dao;
     private readonly IDistributedCache _distributedCache;
-    
+
     public UserLogic(
         ILogger<UserLogic> logger,
         IUserDao dao,
-        IDistributedCache distributedCache)   
+        IDistributedCache distributedCache)
         : base(logger)
     {
         _dao = dao;
         _distributedCache = distributedCache;
     }
-    
+
     public async Task AddNewUser(User user)
     {
         await _dao.AddNewUser(user);
@@ -33,20 +33,27 @@ public class UserLogic : BaseLogic, IUserLogic
     }
 
     public async Task<bool> TokenizeUser(string username, Guid token, long chatId)
-    {        
+    {
         return await _dao.TokenizeUser(username, token, chatId);
     }
 
-    public async Task<User> GetUserByLogin(string login, long chatId)
+    public async Task<User> GetUserByLogin(string login)
     {
-        var user =  await _dao.GetUserByLogin(login);
+        var user = await _dao.GetUserByLogin(login);
+        return user;
+    }
+
+    public async Task<User> GetUserByLoginAndChatId(string login, long chatId)
+    {
+        var user = await _dao.GetUserByLogin(login);
 
         var userString = JsonSerializer.Serialize(user);
 
         await _distributedCache.SetStringAsync(chatId.ToString(), userString);
-        
+
         return user;
     }
+
     public IAsyncEnumerable<User> GetAllUsers()
     {
         return _dao.GetAllUsers();
@@ -61,6 +68,13 @@ public class UserLogic : BaseLogic, IUserLogic
 
             return user;
         }
+
         return null;
     }
+
+    public async Task<bool> LoginByTokenUser(User user)
+    {
+        return await _dao.LoginByToken(user);
+    }
+
 }

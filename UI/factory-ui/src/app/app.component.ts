@@ -12,10 +12,10 @@ export class AppComponent implements OnInit{
   isAuthorized$: Observable<boolean>;
 
   constructor(public authService: AuthService){
-    this.isAuthorized$ = this.authService.checkCreds();
+    this.isAuthorized$ = this.authService.checkCredsInCookie();
   }
 
   ngOnInit(){
-    this.isAuthorized$ = this.authService.checkCreds();
+    this.isAuthorized$ = this.authService.checkCredsInCookie();
   }
 }

@@ -1,7 +1,9 @@
 export class UserAccessToken {
-    AccessToken: string;
-    
-    constructor(accessToken: string) {
-        this.AccessToken = accessToken;
+    token: string;
+    login: string;
+
+    constructor(accessToken: string, login: string) {
+        this.token = accessToken;
+        this.login = login;
     }
 }

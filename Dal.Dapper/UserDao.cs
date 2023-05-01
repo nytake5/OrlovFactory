@@ -90,4 +90,22 @@ public class UserDao : BaseDapperDao, IUserDao
 
         return result;
     }
+
+    public async Task<bool> LoginByToken(User user)
+    {
+        await using var connection = GetConnection();
+        const string query = 
+            $""""
+                SELECT * FROM "FactoryUsers"
+                WHERE "Login" = @login AND "Token" = @token
+            """";
+        
+        var parameters = new
+        {
+            login = user.Login,
+            token = user.Token
+        };
+        var result = await connection.QueryFirstOrDefaultAsync<int>(query, parameters);
+        return result == 1;
+    }
 }
